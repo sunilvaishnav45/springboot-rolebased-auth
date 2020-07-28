@@ -14,7 +14,7 @@ import javax.persistence.Query;
 @Repository("userRepository")
 public class UserRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserRepository.class);
 
     @Autowired
     private EntityManager entityManager;

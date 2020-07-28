@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.example.roleauth.entity.Role;
+import com.example.roleauth.entity.User;
 import com.example.roleauth.service.impl.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,26 +28,14 @@ public class JwtUtils {
     @Value("${bezkoder.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    public String generateJwtToken(Authentication authentication) {
-
-        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-
-        return Jwts.builder()
-                .setSubject((userPrincipal.getUsername()))
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
-    }
-
     //generate token for user
-    public String generateToken(UserDetailsImpl userDetails,List<String> roles) {
+    public String generateToken(User userDetails, List<Role> roles) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("name",userDetails.getUsername());
         claims.put("email",userDetails.getEmail());
         claims.put("id",userDetails.getId());
         claims.put("roles",roles);
-        return doGenerateToken(claims, userDetails.getEmail());
+        return doGenerateToken(claims, userDetails.getUsername());
     }
 
     //while creating the token -
@@ -78,7 +68,6 @@ public class JwtUtils {
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims string is empty: {}", e.getMessage());
         }
-
         return false;
     }
 }

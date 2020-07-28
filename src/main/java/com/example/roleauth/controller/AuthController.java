@@ -11,6 +11,7 @@ import com.example.roleauth.config.JwtUtils;
 import com.example.roleauth.dao.RoleRepository;
 import com.example.roleauth.dao.UserRepository;
 import com.example.roleauth.dto.LoginRequest;
+import com.example.roleauth.entity.Role;
 import com.example.roleauth.entity.User;
 import com.example.roleauth.service.impl.UserDetailsImpl;
 import org.slf4j.Logger;
@@ -57,19 +58,9 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        LOGGER.info("authenticateUser called");
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(jwtUtils.generateToken(userDetails,roles));
+        User user = userRepository.getUserByUsername(loginRequest.getUserName()) ;
+        List<Role> roles = roleRepository.getUserRoles(user.getId());
+        return ResponseEntity.ok(jwtUtils.generateToken(user,roles));
     }
 
 }

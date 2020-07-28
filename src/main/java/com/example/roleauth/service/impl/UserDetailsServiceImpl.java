@@ -18,9 +18,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Qualifier("userRepository")
     UserRepository userRepository;
 
+    @Autowired
+    UserDetailsImpl userDetails;
+
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         User user = userRepository.getUserByUsername(userName);
-        return UserDetailsImpl.build(user);
+        return userDetails.build(user);
     }
 }

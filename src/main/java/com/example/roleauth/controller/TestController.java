@@ -1,5 +1,6 @@
 package com.example.roleauth.controller;
 
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,19 +21,19 @@ public class TestController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasRole('USER') or hasRole('MONITOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('USER')")
     public String userAccess() {
         return "User Content.";
     }
 
     @GetMapping("/man")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasAuthority('MANAGER')")
     public String moderatorAccess() {
         return "Manager Board.";
     }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String adminAccess() {
         return "Admin Board.";
     }
