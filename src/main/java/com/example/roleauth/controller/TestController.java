@@ -1,8 +1,6 @@
 package com.example.roleauth.controller;
 
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author sunil
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/test")
 public class TestController {
@@ -28,7 +25,7 @@ public class TestController {
 
     @GetMapping("/man")
     @PreAuthorize("hasAuthority('MANAGER')")
-    public String moderatorAccess() {
+    public String managerAccess() {
         return "Manager Board.";
     }
 
@@ -36,5 +33,11 @@ public class TestController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String adminAccess() {
         return "Admin Board.";
+    }
+
+    @GetMapping("/admin-manager")
+    @PreAuthorize("hasAuthority('ADMIN') OR hasAuthority('MANAGER')")
+    public String adminManagerAccess() {
+        return "Admin / Manager Board.";
     }
 }
